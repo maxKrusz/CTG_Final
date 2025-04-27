@@ -2,6 +2,24 @@
 
 This repository contains the Python source code for the experiments of the paper "Closing the Gap: Achieving Better Accuracy-Robustness Tradeoffs against Query-Based Attacks", published in the Proceedings of the AAAI Conference on Artificial Intelligence 2024. 
 
+## System and Software Requirements
+
+The experiments in the paper were conducted on a server with the following hardware specifications:
+
+- **CPUs**: 2 × AMD EPYC 7542
+- **GPUs**: 2 × NVIDIA A40
+- **Memory**: 256 GB RAM
+
+While this hardware setup was used to achieve the reported results, it is **not strictly required** to run the code. Any modern machine with a capable GPU should be sufficient for smaller-scale experiments.
+
+The software environment used includes:
+
+- **Operating System**: Ubuntu 22.04
+- **Python**: 3.9
+- **Anaconda**: 2023.07 or later (recommended for environment management)
+- **PyTorch**: 1.13.0
+- **CUDA**: 11.7
+
 ## Experiments 
 
 ### Conda environment setup
