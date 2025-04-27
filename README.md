@@ -1,6 +1,6 @@
 # Closing the Gap: Achieving Better Accuracy-Robustness Tradeoffs against Query-Based Attacks
 
-This repository contains the Python source code for the experiments of the paper "Closing the Gap: Achieving Better Accuracy-Robustness Tradeoffs against Query-Based Attacks", published in the Proceedings of the AAAI Conference on Artificial Intelligence 2024. 
+This repository contains the Python source code for the experiments of the paper "Closing the Gap: Achieving Better Accuracy-Robustness Tradeoffs against Query-Based Attacks", published in the Proceedings of the AAAI Conference on Artificial Intelligence 2024. Paper linked [here](https://ojs.aaai.org/index.php/AAAI/article/view/30187) and cited below. 
 
 ## System and Software Requirements
 
@@ -10,7 +10,7 @@ The experiments in the paper were conducted on a server with the following hardw
 - **GPUs**: 2 × NVIDIA A40
 - **Memory**: 256 GB RAM
 
-While this hardware setup was used to achieve the reported results, it is **not strictly required** to run the code. Any modern machine with a capable GPU should be sufficient for smaller-scale experiments.
+While this hardware setup was used to achieve the reported results, it is **not strictly required** to run the code. Any modern machine with a capable GPU should be sufficient for smaller-scale experiments. It is recommended that the NVIDIA GPU have ≥6 GB VRAM and CUDA 11.7+ support.
 
 The software environment used includes:
 
@@ -19,6 +19,15 @@ The software environment used includes:
 - **Anaconda**: 2023.07 or later (recommended for environment management)
 - **PyTorch**: 1.13.0
 - **CUDA**: 11.7
+
+## Step by Step Guide
+
+1. Verify that your system meets the software requirements and has a capable GPU.
+2. Clone the repository.
+3. Download the models, adversarial images, and parsed JSON files as described in the following steps.
+4. The used models can be downloaded [here](https://ruhr-uni-bochum.sciebo.de/s/R6FGr39LZaqHRPn) and need to be unpacked into the ```models``` folder in the root directory. Follow the directory depiction below.
+5. The generated adversarial images and parsed json files can be downloaded [here](https://ruhr-uni-bochum.sciebo.de/s/R6FGr39LZaqHRPn) and need to be unpacked into the root of the project. Then the main results in form of Pareto plots can be generated with the script ```evaluation.py```. Follow the directory depiction below.
+
 
 ## Experiments 
 
@@ -47,8 +56,8 @@ conda env create -f environment.yml
 ├── evaluation.py // script for generting Pareto plots out of experimental results
 ├── model_factory.py
 ├── model_interface.py
-├── results // output files (download link below)
-├── models // contains models and special architectures (download link below)
+├── results // output files (download link above)
+├── models // contains models and special architectures (download link above)
 │   ├── calibration
 │   │   └── temperature_scaling.py
 │   ├── cifar10
@@ -103,13 +112,6 @@ optional arguments:
                         (default: True)
 ```
 
-### Results
-
-The used models can be downloaded [here](https://ruhr-uni-bochum.sciebo.de/s/R6FGr39LZaqHRPn) and need to be unpacked into the ```models``` folder in the root directory.
-
-The generated adversarial images and parsed json files can be downloaded [here](https://ruhr-uni-bochum.sciebo.de/s/pYrsmzVPOq040g6) and need to be unpacked into the root of the project.
-Then the main results in form of Pareto plots can be generated with the script ```evaluation.py```.
-
 ## Citation
 
 ```
@@ -128,4 +130,4 @@ Then the main results in form of Pareto plots can be generated with the script `
 
 ## Contact
 
-Feel free to contact the first author via the e-mail provided on the publication.
+Feel free to contact the first author via the e-mail provided on the publication and author of the proposed improvement via mkrusz@uri.edu.
