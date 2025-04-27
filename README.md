@@ -28,6 +28,24 @@ The software environment used includes:
 4. The used models can be downloaded [here](https://ruhr-uni-bochum.sciebo.de/s/R6FGr39LZaqHRPn) and need to be unpacked into the ```models``` folder in the root directory. Follow the directory depiction below.
 5. The generated adversarial images and parsed json files can be downloaded [here](https://ruhr-uni-bochum.sciebo.de/s/R6FGr39LZaqHRPn) and need to be unpacked into the root of the project. Then the main results in form of Pareto plots can be generated with the script ```evaluation.py```. Follow the directory depiction below.
 
+## Improvements
+
+### Adaptive Tau Thresholding
+
+We implemented adaptive selection of the confidence threshold (τ) used for test-time defense activation.
+
+Instead of manually specifying a fixed τ value, the threshold is automatically computed based on the model's performance on clean validation data:
+- τ is set to a specified percentile (default: 5th percentile) of maximum softmax confidences on the validation set.
+- This approach ensures that τ adapts to the model, dataset, and training characteristics.
+
+**Usage:**
+- Enable adaptive tau by adding `--adaptive_tau` when launching experiments.
+- Control the percentile with `--adaptive_tau_percentile`, if needed (default is 5.0).
+
+Example:
+```python main.py -a popskipjump -n 50 -d cifar10 --arch densenet121 --defense rnd --epsilon 3.0 -q 15000 -m attack --adaptive_tau```
+
+
 
 ## Experiments 
 
@@ -85,6 +103,7 @@ usage: runall.py [-h] [--gpus GPUS] [--attack {popskipjump,surfree}]
                  [--output | --no-output] [--evaluate | --no-evaluate]
                  [--override | --no-override]
                  [--calibration | --no-calibration]
+                 [--adaptive_tau | --no-adaptive_tau] [--adaptive_tau_percentile ADAPTIVE_TAU_PERCENTILE]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -110,6 +129,12 @@ optional arguments:
   --calibration, --no-calibration
                         Applies calibration to the output of the model.
                         (default: True)
+  --adaptive_tau, --no-adaptive_tau
+                        Enables adaptive selection of the confidence threshold tau based on validation set.
+                        (default: False)
+  --adaptive_tau_percentile ADAPTIVE_TAU_PERCENTILE
+                        Percentile of validation confidences to set tau.
+                        (default: 5.0)
 ```
 
 ## Citation
