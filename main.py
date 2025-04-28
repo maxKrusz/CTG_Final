@@ -8,6 +8,7 @@ import time
 
 import numpy as np
 import torch
+import torch.nn.functional as F
 from PIL import Image
 
 import dataset_helper
@@ -50,6 +51,9 @@ def get_args():
     parser.add_argument('--override', action=argparse.BooleanOptionalAction)
 
     parser.add_argument('--no_calibration', action=argparse.BooleanOptionalAction)
+    parser.add_argument('--adaptive_tau', action='store_true', help='Use adaptive tau based on validation confidence percentiles')
+    parser.add_argument('--adaptive_tau_percentile', type=float, default=5.0, help='Percentile to use for adaptive tau (default 5)')
+
 
     return parser.parse_args()
 
@@ -126,6 +130,21 @@ def save_images(output_folder, original_images, adversarial_images, valid_advs):
         img_adv_i = Image.fromarray(adv_i.transpose(1, 2, 0), mode="RGB")
         img_adv_i.save(f"{output_folder}/images/{idx}_adversarial.jpg")
 
+def compute_adaptive_tau(model, val_loader, percentile=5):
+    model.model.eval()
+    confidences = []
+    with torch.no_grad():
+        for x_val, _ in val_loader:
+            x_val = x_val.cuda()  # assuming your model and data are on CUDA
+            outputs = model(x_val)
+            softmax_outputs = F.softmax(outputs, dim=1)
+            max_confidences, _ = torch.max(softmax_outputs, dim=1)
+            confidences.extend(max_confidences.cpu().numpy())
+    confidences = np.array(confidences)
+    tau = np.percentile(confidences, percentile)
+    print(f"[Adaptive τ] Selected tau at {percentile}th percentile: {tau:.4f}")
+    return tau
+
 
 def main():
     args = get_args()
@@ -189,6 +208,12 @@ def main():
     ## LOAD DATASET ##
     print("Load Data")
     dataset = dataset_helper.get_dataset(args.dataset, split="val")
+
+    # Optional: Override threshold if adaptive_tau is selected
+    if args.adaptive_tau:
+        val_loader = torch.utils.data.DataLoader(dataset, batch_size=250, shuffle=False)
+        args.threshold = compute_adaptive_tau(model, val_loader, percentile=args.adaptive_tau_percentile)
+
 
     labels = dataset.classes
 
