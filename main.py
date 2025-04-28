@@ -130,19 +130,31 @@ def save_images(output_folder, original_images, adversarial_images, valid_advs):
         img_adv_i = Image.fromarray(adv_i.transpose(1, 2, 0), mode="RGB")
         img_adv_i.save(f"{output_folder}/images/{idx}_adversarial.jpg")
 
+## Implementation of adaptive threshold
+
 def compute_adaptive_tau(model, val_loader, percentile=5):
+
+    # Set the model to evaluation mode
     model.model.eval()
+
     confidences = []
-    with torch.no_grad():
+
+    with torch.no_grad(): # No gradients needed for validation
         for x_val, _ in val_loader:
-            x_val = x_val.cuda()  # assuming your model and data are on CUDA
+            x_val = x_val.cuda()  # Move inputs to GPU
             outputs = model(x_val)
-            softmax_outputs = F.softmax(outputs, dim=1)
-            max_confidences, _ = torch.max(softmax_outputs, dim=1)
+            softmax_outputs = F.softmax(outputs, dim=1)  # Convert logits to probabilities
+            max_confidences, _ = torch.max(softmax_outputs, dim=1) # Take the max confidence per sample
             confidences.extend(max_confidences.cpu().numpy())
+
+    # Convert the list of confidences to a numpy array
     confidences = np.array(confidences)
+
+    # Compute the tau as the specified percentile of collected confidences
     tau = np.percentile(confidences, percentile)
+
     print(f"[Adaptive τ] Selected tau at {percentile}th percentile: {tau:.4f}")
+    
     return tau
 
 
