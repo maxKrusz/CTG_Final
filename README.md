@@ -16,7 +16,7 @@ The software environment used includes:
 
 - **Operating System**: Ubuntu 22.04
 - **Python**: 3.9
-- **Anaconda**: 2023.07 or later (recommended for environment management)
+- **Anaconda**: 2023.07 or later
 - **PyTorch**: 1.13.0
 - **CUDA**: 11.7
 
